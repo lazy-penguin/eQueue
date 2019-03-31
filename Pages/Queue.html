@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script defer src="main.js"></script>
+      <title>Queue</title>
+</head>
+
+<body style="background-color:beige;">
+      <h1 style="color:dimgray;">Queue Name</h1>
+
+      <div class="card-panel #d1c4e9 deep-purple lighten-4">user#1</div>
+      <div class="card-panel #d1c4e9 indigo darken-2">
+            <span class="white-text">user#2</span></div>
+      <div class="card-panel #d1c4e9 deep-purple lighten-4">user#3</div>
+      <br>
+      <button class="waves-effect grey lighten-1 btn-large black-text">Place
+            exchange</button>
+      <button class="waves-effect grey lighten-1 btn-large black-text modal-trigger" data-target="changeNameModal">Change
+            name</button>
+      <button class="waves-effect grey lighten-1 btn-large black-text">Leave</button>
+
+      <div id="changeNameModal" class="modal">
+            <div class="modal-content">
+                  <input type="text" placeholder="username" id="queueInviteLink">
+                  <button class="waves-effect grey lighten-1 btn-small">Change</button>
+                  </form>
+            </div>
+      </div>
+
+</body>
+
+</html>
