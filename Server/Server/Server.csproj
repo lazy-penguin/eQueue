@@ -59,13 +59,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\QueueController.cs" />
+    <Compile Include="Controllers\QueueOrderController.cs" />
+    <Compile Include="Controllers\UserAccessController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="eQueueContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueueInfo.cs" />
-    <Compile Include="QueueOrder.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserAccess.cs" />
+    <Compile Include="Tables\QueueInfo.cs" />
+    <Compile Include="Tables\QueueOrder.cs" />
+    <Compile Include="Tables\User.cs" />
+    <Compile Include="Tables\UserAccess.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

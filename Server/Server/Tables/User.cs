@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace eQueue
+namespace Server
 {
     public class User
     {
@@ -17,11 +18,14 @@ namespace eQueue
         [Required]
         public bool IsTemporary { get; set; }
 
-        public int? QueueOrderId;
-        public QueueOrder QueueOrder;
+        public ICollection<QueueOrder> QueueOrders { get; set; }
+        public ICollection<UserAccess> UserAccesses { get; set; }
 
-        public int? UserAccessId;
-        public UserAccess UserAccess;
+        public User()
+        {
+            QueueOrders = new List<QueueOrder>();
+            UserAccesses = new List<UserAccess>();
+        }
 
         public override string ToString()
         {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace eQueue
+namespace Server
 {
     public enum AccessType
     {
@@ -16,8 +16,13 @@ namespace eQueue
         [Key]
         public int Id { get; set; }
 
-        public ICollection<QueueInfo> Queues { get; set; }
-        public ICollection<User> Users { get; set; }
+        public int UserId;
+        [Required]
+        public User User;
+
+        public int QueueInfoId;
+        [Required]
+        public QueueInfo QueueInfo;
 
         [Required]
         [MaxLength(32)]
@@ -25,12 +30,6 @@ namespace eQueue
 
         [Required]
         public AccessType AccessTypeName { get; set; }
-
-        public UserAccess()
-        {
-            Queues = new List<QueueInfo>();
-            Users = new List<User>();
-        }
 
         public override string ToString()
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace eQueue
+namespace Server
 {
     public class Program
     {
@@ -11,12 +11,13 @@ namespace eQueue
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    context.Users.Add(new User { IsTemporary = false, Login = i.ToString() });
+                    context.Users.Add(new User { IsTemporary = false, Login = i.ToString(), PasswordHash = "qwerty", LastActivity = DateTime.Now });
                 }
                 context.SaveChanges();
 
                 var users = context.Users.ToArray();
                 Console.WriteLine($"We have {users.Length} users.");
+
                 foreach (var user in users)
                 {
                     Console.WriteLine(user);
@@ -24,8 +25,9 @@ namespace eQueue
 
                 for (int i = 0; i < 5; i++)
                 {
-                    context.Queues.Add(new QueueInfo { Name = i.ToString() });
+                    context.Queues.Add(new QueueInfo { Name = i.ToString(), Link = "abc" });
                 }
+                context.SaveChanges();
 
                 var queues = context.Queues.ToArray();
                 Console.WriteLine($"We have {users.Length} queues.");
