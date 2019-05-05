@@ -1,65 +1,100 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DataManagers;
+using System.Web.Http;
 
-namespace Server
+namespace ServerSide.Controllers
 {
-    class UserController
+    public class UserController : ApiController
     {
-        /*registrate new user*/
-        bool Insert(String login, String passwordHash)
+        [HttpGet]
+        public string Login(int id)
         {
-            using (var context = new eQueueContext())
-            {            
-                User user = new User { IsTemporary = false, Login = login, PasswordHash = passwordHash, LastActivity = DateTime.Now };
-                context.Users.Add(user);
-                context.SaveChanges();
-            }
-            return true;
+            return UserManager.GetLogin(id);
+        }
+        [HttpPost]
+        public string Login(int id, string login)
+        {
+            return UserManager.UpdateLogin(id, login);
         }
 
-        bool UpdateStatus(int id)
+        [HttpGet]
+        public string Nickname(int userId, int queueId)
         {
-            using (var context = new eQueueContext())
-            {
-                User user = context.Users.Find(id);
-                user.IsTemporary = true;
-                context.SaveChanges();
-            }
-            return true;
+            return UserAccessManager.GetNickname(userId, queueId);
+        }
+        [HttpPost]
+        public string Nickname(int userId, int queueId, string nickname)
+        {
+            return UserAccessManager.UpdateNickname(userId, queueId, nickname);
         }
 
-        bool UpdateLogin(int id, String newLogin)
+        [HttpGet]
+        public void Status(int id)
         {
-            using (var context = new eQueueContext())
+            UserManager.UpdateStatus(id);
+        }
+        [HttpGet]
+        public string Access(int userId, int queueId)
+        {
+            return UserAccessManager.GetAccessType(userId, queueId);
+        }
+        public class UserData
+        {
+            public int Id;
+            public string Name;
+            public readonly string Token;
+            public bool IsTemporary;
+            public UserData(string name, int id, string token, bool IsTemporary)
             {
-                User user = context.Users.Find(id);
-                user.Login = newLogin;
-                context.SaveChanges();
+                this.Name = name;
+                this.Id = id;
+                this.Token = token;
+                this.IsTemporary = IsTemporary;
             }
-            return true;
         }
 
-        bool UpdatePassword(int id, String newPasswordHash)
+        /*get user by token*/
+        [HttpGet]
+        public UserData GetSignIn(string token)
         {
-            using (var context = new eQueueContext())
-            {
-                User user = context.Users.Find(id);
-                user.PasswordHash = newPasswordHash;
-                context.SaveChanges();
-            }
-            return true;
+            var userId = TokenManager.GetUserId(token);
+            var user = UserManager.GetUser(userId);
+            if (user == null)
+                return null;
+            var data = new UserData(user.Login, user.Id, token, user.IsTemporary);
+            return data;
         }
 
-        bool Delete(int id)
+        /*temporary registration*/
+        [HttpGet]
+        public UserData SignUp()
         {
-            using (var context = new eQueueContext())
-            {
-                User user = context.Users.Find(id);
-                if (user == null)
-                    return false;
-                context.Users.Remove(user);
-                context.SaveChanges();
-            }
-            return true;
+            var user = UserManager.Insert();
+            var data = new UserData(user.Login, user.Id, user.Tokens.Last().Token, user.IsTemporary);
+            return data;
+        }
+
+        /*regular registration*/
+        [HttpPost]
+        public string SignUp([FromBody]UserData userData)
+        {
+            //var userId = TokenManager.GetUserId(userData.Token);
+            UserManager.MakeRegular(userData.Id, userData.Name, null);  //where is password&&&&&
+            return userData.Name;
+        }
+
+        [HttpDelete]
+        public void Delete(int id)
+        {
+            UserManager.Delete(id);
+        }
+
+        [HttpGet]
+        public List<QueueInfo> Queues(int userId)
+        {
+            return UserAccessManager.GetQueues(userId);
         }
     }
 }

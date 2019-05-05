@@ -1,68 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web.Http;
+using DataManagers;
 
-namespace Server
+namespace ServerSide.Controllers
 {
-    class QueueController
+    public class QueueController : ApiController
     {
-        /*create new QueueInfo and UserAcces with info about queue's owner*/
-        bool Insert(String name, String link, DateTime timer, String nickname,int userId)
+        [HttpGet]
+        public string Name(int id)
         {
-            using (var context = new eQueueContext())
-            {
-                QueueInfo queue = new QueueInfo { Name = name, Link =  link, Timer = timer};
-                UserAccess access = new UserAccess { Nickname = nickname, AccessTypeName = AccessType.Owner };
-                User user = context.Users.Find(userId);
-
-
-                access.User = user;
-                access.QueueInfo = queue;
-
-                user.UserAccesses.Add(access);
-                queue.UserAccesses.Add(access);
-                context.Queues.Add(queue);
-                context.UserAccesses.Add(access);
-                context.SaveChanges();
-            }
-            return true;
+            return QueueManager.GetName(id);
+        }
+        [HttpPost]
+        public string Name(int id, string name)
+        {
+            return QueueManager.UpdateName(id, name);
         }
 
-        bool UpdateName(int id, String newName)
+        [HttpGet]
+        public string Timer(int id)
         {
-            using (var context = new eQueueContext())
-            {
-                QueueInfo queue = context.Queues.Find(id);
-                queue.Name = newName;
-                context.SaveChanges();
-            }
-            return true;
+            return QueueManager.GetTimer(id).ToString();
+        }
+        [HttpPost]
+        public string Timer(int id, DateTime timer)
+        {
+            return QueueManager.UpdateTimer(id, timer).ToString();
         }
 
-        bool UpdateTimer(int id, DateTime newTimer)
+        [HttpGet]
+        public List<User> AllUsers(int queueId)
         {
-            using (var context = new eQueueContext())
-            {
-                QueueInfo queue = context.Queues.Find(id);
-                queue.Timer = newTimer;
-                context.SaveChanges();
-            }
-            return true;
+            return UserAccessManager.GetUsers(queueId);
         }
 
-        bool Delete(int id)
+        public class QueueData
         {
-            using (var context = new eQueueContext())
+            public int Id;
+            public string Name;
+            public string Link;
+            public DateTime Timer;
+            public QueueData(string name, int id, string link, DateTime timer)
             {
-                QueueInfo queue = context.Queues.Find(id);
-                if (queue == null)
-                    return false;
-                context.Queues.Remove(queue);
-                context.SaveChanges();
+                this.Name = name;
+                this.Id = id;
+                this.Link = link;
+                this.Timer = timer;
             }
-            return true;
+        }
+
+        [HttpPost]
+        public QueueData Create(string name, DateTime timer, string nickname, int id)
+        {
+            string link = Guid.NewGuid().ToString();
+            QueueInfo queue = QueueManager.Insert(name, link, timer, nickname, id);
+            return new QueueData(name, queue.Id, link, timer);
+        }
+        [HttpDelete]
+        public void Delete(int id)
+        {
+            QueueManager.Delete(id);
+        }
+       
+        [HttpPost]
+        public string Owner(int queueId, int userId)
+        {
+            return UserAccessManager.ChangeOwner(userId, queueId);
         }
     }
 }
