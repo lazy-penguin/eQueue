@@ -21,7 +21,7 @@ $(document).ready(function () {
 });
 
 function resetUserName() {
-    userNameEdit.value = userName;
+    userNameEdit.value = user.name;
 }
 
 function loadQueueInfo() {
@@ -50,13 +50,13 @@ function loadQueueUsers() {
         { id: 3, name: "Maria" },
         { id: 1, name: "Alex" },
         { id: 2, name: "John" }];
-    users.forEach(user => createUserElement(user));
-    if (users[users.length - 1].id == userId)
+    users.forEach(userData => createUserElement(userData));
+    if (users[users.length - 1].id == user.id)
         exchangePlaceButton.classList.add("disabled");
 }
 
-function createUserElement(user) {
-    if (user.id == userId) {
+function createUserElement(userData) {
+    if (userData.id == user.id) {
         userQueueEntry.hidden = false;
         takePlaceButton.classList.add("disabled");
         userQueueEntryName.innerText = user.name;
@@ -68,6 +68,6 @@ function createUserElement(user) {
     userElement.classList.add('collection-item');
     userElement.classList.add('deep-purple');
     userElement.classList.add('lighten-4');
-    userElement.innerText = user.name
+    userElement.innerText = userData.name
     queueUsersDiv.appendChild(userElement);
 }

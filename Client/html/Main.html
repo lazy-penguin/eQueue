@@ -12,19 +12,15 @@
 
 <body class="container">
 	<div class="row valign-wrapper">
-		<h2 class="col s12 m8 l8" style="color:dimgray;">
-			Select queue
-		</h2>
+		<h2 class="col s12 m8 l8" style="color:dimgray;">Select queue</h2>
 		<div class="col s12 m4 l4 right-align">
-			<div>You logged as:
-				<span id="username"></span>
-			</div>
+			<div>You <span id="temporary-login-text"></span> logged as <span id="username"></span></div>
+			<button class="waves-effect grey lighten-1 btn-small black-text" onclick="changeUser()">Register</button>
 			<button class="waves-effect grey lighten-1 btn-small black-text" onclick="changeUser()">Change user</button>
 		</div>
 	</div>
 
-	<div class="collection" id="queues" style="max-height: 60vh; overflow: auto;">
-	</div>
+	<div class="collection" id="queues" style="max-height: 60vh; overflow: auto;"></div>
 
 	<button class="waves-effect grey lighten-1 btn-large black-text modal-trigger"
 		data-target="joinQueueModal">Join</button>

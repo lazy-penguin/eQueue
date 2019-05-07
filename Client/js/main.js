@@ -7,7 +7,7 @@ $(document).ready(function () {
     $("#datepicker").datepicker({ container: $("body"), autoClose: true });
     $("#timepicker").timepicker({ container: "body", autoClose: true, twelveHour: false });
     $('.modal').modal();
-    $('#username')[0].innerText = userName;
+    $('#username')[0].innerText = user.name;
     loadQueues();
 });
 

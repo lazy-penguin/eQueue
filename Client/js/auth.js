@@ -1,6 +1,5 @@
-token = undefined;
-userName = undefined;
-userId = undefined;
+restApiUrl = document.location.origin + "/REST";
+user = undefined;
 
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
@@ -11,7 +10,19 @@ function getCookie(name) {
 
 function getTemporaryUser() {
     var req = new XMLHttpRequest();
-    req.open("GET", serverIp + "/users/login", false);
+    req.open("GET", restApiUrl + "/users/signup", false);
+    try {
+        req.send();
+        if (xhr.status == 200)
+            return JSON.parse(req.responseText);
+    }
+    catch { }
+    return null;
+}
+
+function getUserByToken(token) {
+    var req = new XMLHttpRequest();
+    req.open("GET", restApiUrl + "/users/login?token=" + token, false);
     try {
         req.send();
         if (xhr.status == 200)
@@ -22,12 +33,11 @@ function getTemporaryUser() {
 }
 
 token = getCookie("token");
+if (token !== undefined) {
+    user = getUserByToken(token);
+}
 if (token === undefined) {
     user = getTemporaryUser();
-    if (user === null)
-        document.location = "/Login";
-    userId = user.id;
-    userName = user.name;
-    token = user.token;
-    document.cookie = "token=" + token;
+    // if (user === null)
+    //     document.location = "/Login";
 }
