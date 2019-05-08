@@ -80,7 +80,6 @@ namespace ServerSide.Controllers
         [HttpPost]
         public string SignUp([FromBody]UserData userData)
         {
-            //var userId = TokenManager.GetUserId(userData.Token);
             UserManager.MakeRegular(userData.Id, userData.Name, null);  //where is password&&&&&
             return userData.Name;
         }

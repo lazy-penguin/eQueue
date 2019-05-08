@@ -37,25 +37,19 @@ namespace ServerSide.Controllers
 
         public class QueueData
         {
-            public int Id;
+            public int UserId;
             public string Name;
+            public string UserNickname;
             public string Link;
             public DateTime Timer;
-            public QueueData(string name, int id, string link, DateTime timer)
-            {
-                this.Name = name;
-                this.Id = id;
-                this.Link = link;
-                this.Timer = timer;
-            }
         }
 
         [HttpPost]
-        public QueueData Create(string name, DateTime timer, string nickname, int id)
+        public string Create([FromBody]QueueData queueData)
         {
             string link = Guid.NewGuid().ToString();
-            QueueInfo queue = QueueManager.Insert(name, link, timer, nickname, id);
-            return new QueueData(name, queue.Id, link, timer);
+            QueueInfo queue = QueueManager.Insert(queueData.Name, link, queueData.Timer, queueData.UserNickname, queueData.UserId);
+            return queueData.Name;
         }
         [HttpDelete]
         public void Delete(int id)
