@@ -16,12 +16,14 @@ namespace DataManagers
         [Key]
         public int Id { get; set; }
 
-        public int UserId { get; set; }
         [Required]
+
+        public int UserId { get; set; }
         public User User { get; set; }
 
-        public int QueueInfoId { get; set; }
         [Required]
+
+        public int QueueInfoId { get; set; }
         public QueueInfo QueueInfo { get; set; }
 
         [Required]

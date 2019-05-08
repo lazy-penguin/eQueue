@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 
 namespace DataManagers
@@ -24,7 +25,7 @@ namespace DataManagers
 
         public static int GetLastNumberInQueue(QueueInfo queue, eQueueContext context)
         {
-            return context.QueueOrders.Where(qo => qo.QueueInfoId == queue.Id).Max(qo => qo.Number);
+            return context.QueueOrders.Select(qo => qo.Number).DefaultIfEmpty(0).Max(); ;
         }
 
         public static bool SwapUsers(int userIdA, int userIdB, int queueId)
@@ -50,6 +51,18 @@ namespace DataManagers
                         context.SaveChanges();
                         transaction.Commit();
                     }
+                    catch (DbEntityValidationException ex)
+                    {
+                        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
+                        {
+                            System.Console.Write("Object: " + validationError.Entry.Entity.ToString());
+                            System.Console.Write(" ");
+                            foreach (DbValidationError err in validationError.ValidationErrors)
+                            {
+                                System.Console.Write(err.ErrorMessage + " ");
+                        }
+                        }
+                    }
                     catch (Exception e)
                     {
                         transaction.Rollback();
@@ -73,7 +86,7 @@ namespace DataManagers
                 order.User = user;
                 order.QueueInfo = queue;
 
-                order.Number = GetLastNumberInQueue(queue, context);
+                order.Number = GetLastNumberInQueue(queue, context) + 1;
 
                 context.QueueOrders.Add(order);
                 context.SaveChanges();

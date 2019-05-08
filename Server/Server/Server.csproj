@@ -217,6 +217,9 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Queue.js" />
     <Content Include="Scripts\QueueInfoIndex.js" />
+    <Content Include="Views\Pages\Login.cshtml" />
+    <Content Include="Views\Pages\Main.cshtml" />
+    <Content Include="Views\Pages\Queue.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -230,14 +233,10 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Pages\Queue.cshtml" />
-    <Content Include="Views\Pages\Login.cshtml" />
-    <Content Include="Views\Pages\Main.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Order\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -46,12 +46,12 @@ namespace ServerSide.Controllers
             public string Name;
             public readonly string Token;
             public bool IsTemporary;
-            public UserData(string name, int id, string token, bool IsTemporary)
+            public UserData(string name, int id, string token, bool isTemporary)
             {
-                this.Name = name;
-                this.Id = id;
-                this.Token = token;
-                this.IsTemporary = IsTemporary;
+                Name = name;
+                Id = id;
+                Token = token;
+                IsTemporary = isTemporary;
             }
         }
 
