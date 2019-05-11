@@ -57,7 +57,7 @@ namespace ServerSide.Controllers
 
         /*get user by token*/
         [HttpGet]
-        public UserData GetSignIn(string token)
+        public UserData SignIn(string token)
         {
             var userId = TokenManager.GetUserId(token);
             var user = UserManager.GetUser(userId);

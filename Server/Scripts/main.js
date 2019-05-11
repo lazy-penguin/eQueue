@@ -1,15 +1,7 @@
 M.AutoInit();
 
-serverIp = "http://127.0.0.1:1337";
+restApiUrl = document.location.origin + "/REST";
 queues = document.getElementById("queues");
-
-$(document).ready(function () {
-    $("#datepicker").datepicker({ container: $("body"), autoClose: true });
-    $("#timepicker").timepicker({ container: "body", autoClose: true, twelveHour: false });
-    $('.modal').modal();
-    $('#username')[0].innerText = user.name;
-    loadQueues();
-});
 
 function loadQueues() {
     var req = new XMLHttpRequest();
@@ -73,3 +65,9 @@ function createQueue() {
 function changeUser() {
     document.location = "./Login.html"
 }
+
+$("#datepicker").datepicker({ container: $("body"), autoClose: true });
+$("#timepicker").timepicker({ container: "body", autoClose: true, twelveHour: false });
+$('.modal').modal();
+$('#username')[0].innerText = user.Name;
+loadQueues();

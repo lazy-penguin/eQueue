@@ -46,9 +46,8 @@ namespace DataManagers
         {
             using (var context = new eQueueContext())
             {
-                return context.Tokens
-                                    .Where(t => t.Token == token)
-                                    .FirstOrDefault().UserId;
+                var user = context.Tokens.FirstOrDefault(t => t.Token == token);
+                return user != null ? user.Id : 0;
             }
         }
 

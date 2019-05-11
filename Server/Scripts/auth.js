@@ -10,10 +10,10 @@ function getCookie(name) {
 
 function getTemporaryUser() {
     var req = new XMLHttpRequest();
-    req.open("GET", restApiUrl + "/users/signup", false);
+    req.open("GET", restApiUrl + "/user/signup/", false);
     try {
         req.send();
-        if (xhr.status == 200)
+        if (req.status == 200)
             return JSON.parse(req.responseText);
     }
     catch { }
@@ -22,10 +22,10 @@ function getTemporaryUser() {
 
 function getUserByToken(token) {
     var req = new XMLHttpRequest();
-    req.open("GET", restApiUrl + "/users/login?token=" + token, false);
+    req.open("GET", restApiUrl + "/user/signin?token=" + token, false);
     try {
         req.send();
-        if (xhr.status == 200)
+        if (req.status == 200)
             return JSON.parse(req.responseText);
     }
     catch { }
@@ -36,8 +36,10 @@ token = getCookie("token");
 if (token !== undefined) {
     user = getUserByToken(token);
 }
-if (token === undefined) {
+console.log(user)
+if (token === undefined || user === null) {
     user = getTemporaryUser();
-    // if (user === null)
-    //     document.location = "/Login";
+    document.cookie = `token=${user.Token}`;
+    if (user === null)
+        document.location = "/Login";
 }
