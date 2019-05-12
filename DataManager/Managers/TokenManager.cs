@@ -6,7 +6,7 @@ namespace DataManagers
     public class TokenManager
     {
         /*user join the queue*/
-        public static bool Insert(int userId)
+        public static void Insert(int userId)
         {
             using (var context = new eQueueContext())
             {
@@ -19,16 +19,13 @@ namespace DataManagers
                 context.Tokens.Add(token);
                 context.SaveChanges();
             }
-            return true;
         }
 
         public static void Insert(User user)
         {
                 UserToken token = new UserToken { Token = Guid.NewGuid().ToString() };
-
                 user.Tokens.Add(token);
                 token.User = user;
-
         }
 
         public static string GetToken(int userId)

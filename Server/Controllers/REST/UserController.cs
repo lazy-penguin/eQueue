@@ -3,97 +3,151 @@ using System.Collections.Generic;
 using System.Linq;
 using DataManagers;
 using System.Web.Http;
+using System.Net;
+using Server.Data;
 
-namespace ServerSide.Controllers
+namespace Server.Controllers
 {
     public class UserController : ApiController
     {
-        [HttpGet]
-        public string Login(int id)
+        private int CheckToken()
         {
-            return UserManager.GetLogin(id);
-        }
-        [HttpPost]
-        public string Login(int id, string login)
-        {
-            return UserManager.UpdateLogin(id, login);
-        }
-
-        [HttpGet]
-        public string Nickname(int userId, int queueId)
-        {
-            return UserAccessManager.GetNickname(userId, queueId);
-        }
-        [HttpPost]
-        public string Nickname(int userId, int queueId, string nickname)
-        {
-            return UserAccessManager.UpdateNickname(userId, queueId, nickname);
-        }
-
-        [HttpGet]
-        public void Status(int id)
-        {
-            UserManager.UpdateStatus(id);
-        }
-        [HttpGet]
-        public string Access(int userId, int queueId)
-        {
-            return UserAccessManager.GetAccessType(userId, queueId);
-        }
-        public class UserData
-        {
-            public int Id;
-            public string Name;
-            public readonly string Token;
-            public bool IsTemporary;
-            public UserData(string name, int id, string token, bool isTemporary)
+            string token = null;
+            if (Request.Headers.Contains("Authorization"))
             {
-                Name = name;
-                Id = id;
-                Token = token;
-                IsTemporary = isTemporary;
+                token = Request.Headers.GetValues("Authorization").First();
             }
+
+            if (token == null)
+                return 0;
+
+            var userId = TokenManager.GetUserId(token);
+            return userId;
+        }
+
+        [HttpGet]
+        public IHttpActionResult Login(int id)
+        {
+            int uid = CheckToken();
+            if (uid == 0 || uid != id)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var login = UserManager.GetLogin(id);
+            return new ObjectResult(login, login.GetType(), Request);
+        }
+
+        [HttpPost]
+        public IHttpActionResult Login(int id, string login)
+        {
+            int uid = CheckToken();
+            if (uid == 0 || uid != id)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            UserManager.UpdateLogin(id, login);
+            return Ok();
+        }
+
+        [HttpGet]
+        public IHttpActionResult Nickname(int userId, int queueId)
+        {
+            int uid = CheckToken();
+            if (uid == 0 || uid != userId)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var nickname = UserAccessManager.GetNickname(userId, queueId);
+            return new ObjectResult(nickname, nickname.GetType(), Request);
+        }
+
+        [HttpPost]
+        public IHttpActionResult Nickname(int userId, int queueId, string nickname)
+        {
+            int uid = CheckToken();
+            if (uid == 0 || uid != userId)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            UserAccessManager.UpdateNickname(userId, queueId, nickname);
+            return Ok();
+        }
+
+        [HttpGet]
+        public IHttpActionResult Status(int id)
+        {
+            int uid = CheckToken();
+            if (uid == 0 || uid != id)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            UserManager.UpdateStatus(id);
+            return Ok();
+        }
+
+        [HttpGet]
+        public IHttpActionResult Access(int userId, int queueId)
+        {
+            int uid = CheckToken();
+            if (uid == 0 || uid != userId)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var access = UserAccessManager.GetAccessType(userId, queueId);
+            return new ObjectResult(access, access.GetType(), Request);
         }
 
         /*get user by token*/
         [HttpGet]
-        public UserData SignIn(string token)
+        public IHttpActionResult SignIn()
         {
-            var userId = TokenManager.GetUserId(token);
-            var user = UserManager.GetUser(userId);
-            if (user == null)
-                return null;
-            var data = new UserData(user.Login, user.Id, token, user.IsTemporary);
-            return data;
+            int uid = CheckToken();
+            if(uid == 0)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var user = UserManager.GetUser(uid);
+            UserData data = new UserData(user.Login, user.Id, null, user.IsTemporary);
+            return new ObjectResult(data, data.GetType(), Request);
         }
 
         /*temporary registration*/
         [HttpGet]
-        public UserData SignUp()
+        public IHttpActionResult SignUp()
         {
             var user = UserManager.Insert();
             var data = new UserData(user.Login, user.Id, user.Tokens.Last().Token, user.IsTemporary);
-            return data;
+            return new ObjectResult(data, data.GetType(), Request);
         }
 
         /*regular registration*/
         [HttpPost]
-        public string SignUp([FromBody]UserData userData)
+        public IHttpActionResult SignUp([FromBody]UserData userData)
         {
-            UserManager.MakeRegular(userData.Id, userData.Name, null);  //where is password&&&&&
-            return userData.Name;
+            int uid = CheckToken();
+            if (uid == 0)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            if (userData == null)
+                return BadRequest();
+
+            bool ret = UserManager.MakeRegular(userData.Id, userData.Name, null);  //where is password????
+            return Ok(ret);
         }
 
         [HttpDelete]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
-            UserManager.Delete(id);
+            int uid = CheckToken();
+            if (uid == 0 || uid != id)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            bool ret = UserManager.Delete(id);
+            return Ok(ret);
         }
 
         [HttpGet]
-        public List<QueueInfo> Queues(int userId)
+        public IHttpActionResult Queues(int id)
         {
-            return UserAccessManager.GetQueues(userId);
+            int uid = CheckToken();
+            if (uid == 0 || uid != id)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var queues = UserAccessManager.GetQueues(id);
+            return new ObjectResult(queues, queues.GetType(), Request);
         }
     }
 }

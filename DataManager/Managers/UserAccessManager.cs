@@ -22,7 +22,7 @@ namespace DataManagers
         }
 
         /*user join the queue*/
-        public static bool Insert(string nickname, int userId, int queueId)
+        public static void Insert(string nickname, int userId, int queueId)
         {
             using (var context = new eQueueContext())
             {
@@ -38,7 +38,28 @@ namespace DataManagers
                 context.UserAccesses.Add(access);
                 context.SaveChanges();
             }
-            return true;
+        }
+
+        public static bool CheckAccess(int userId, int queueId)
+        {
+            using (var context = new eQueueContext())
+            {
+                var access = context.UserAccesses
+                                    .Where(a => a.QueueInfoId == queueId && a.UserId == userId)
+                                    .FirstOrDefault();
+                return access != null ? true : false;
+            }
+        }
+
+        public static bool CheckPrivilegedAccess(int userId, int queueId)
+        {
+            using (var context = new eQueueContext())
+            {
+                var access = context.UserAccesses
+                                    .Where(a => a.QueueInfoId == queueId && a.UserId == userId)
+                                    .FirstOrDefault();
+                return access?.AccessTypeName == AccessType.Owner ? true : false;
+            }
         }
 
         public static string GetAccessType(int userId, int queueId)
@@ -48,12 +69,12 @@ namespace DataManagers
                 var access = context.UserAccesses
                                     .Where(a => a.QueueInfoId == queueId && a.UserId == userId)
                                     .FirstOrDefault();
-                return access.AccessTypeName.ToString();
+                return access?.AccessTypeName.ToString();
             }
         }
 
         
-        public static string UpdateAccessType(int userId, int queueId, AccessType type)
+        public static void UpdateAccessType(int userId, int queueId, AccessType type)
         {
             using (var context = new eQueueContext())
             {
@@ -62,13 +83,12 @@ namespace DataManagers
                                     .FirstOrDefault();
                 access.AccessTypeName = type;
                 context.SaveChanges();
-                return access.User.Login;
             }
         }
 
-        public static string ChangeOwner(int userId, int queueId)
+        public static void ChangeOwner(int userId, int queueId)
         {
-            return UpdateAccessType(userId, queueId, AccessType.Owner);
+            UpdateAccessType(userId, queueId, AccessType.Owner);
         }
 
         public static string GetNickname(int userId, int queueId)
@@ -78,11 +98,11 @@ namespace DataManagers
                 var access = context.UserAccesses
                                     .Where(a => a.QueueInfoId == queueId && a.UserId == userId)
                                     .FirstOrDefault();
-                return access.Nickname;
+                return access?.Nickname;
             }
         }
 
-        public static string UpdateNickname(int userId, int queueId, string newNickname)
+        public static void UpdateNickname(int userId, int queueId, string newNickname)
         {
             using (var context = new eQueueContext())
             {
@@ -92,7 +112,6 @@ namespace DataManagers
 
                 access.Nickname = newNickname;
                 context.SaveChanges();
-                return access.Nickname;
             }
         }     
     }

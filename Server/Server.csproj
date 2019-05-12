@@ -148,6 +148,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Data\ObjectResult.cs" />
+    <Compile Include="Data\QueueData.cs" />
+    <Compile Include="Data\UserData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

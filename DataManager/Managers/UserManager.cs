@@ -24,23 +24,27 @@ namespace DataManagers
                 context.Users.Add(user);
                 context.SaveChanges();
 
+                user.Login += user.Id;
+                context.SaveChanges();
+
                 return user;
             }
         }
 
-        public static void MakeRegular(int id, string login, string passwordHash)
+        public static bool MakeRegular(int id, string login, string passwordHash)
         {
             using (var context = new eQueueContext())
             {
                 User user = context.Users.Find(id);
                 if (!user.IsTemporary)
-                    return;
+                    return false;
 
                 user.Login = login;
                 user.PasswordHash = passwordHash;
                 user.IsTemporary = false;
 
                 context.SaveChanges();
+                return true;
             }
         }
 
@@ -93,6 +97,16 @@ namespace DataManagers
                 context.SaveChanges();
             }
             return true;
+        }
+
+        public static void UpdateActivity(int id)
+        {
+            using (var context = new eQueueContext())
+            {
+                User user = context.Users.Find(id);
+                user.LastActivity = DateTime.Now;
+                context.SaveChanges();
+            }
         }
 
         public static bool Delete(int id)
