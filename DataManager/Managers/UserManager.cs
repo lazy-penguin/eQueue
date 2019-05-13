@@ -17,17 +17,28 @@ namespace DataManagers
         {
             using (var context = new eQueueContext())
             {
-                User user = new User { PasswordHash = null, LastActivity = DateTime.Now, IsTemporary = true };
-                user.Login = "user";
-                TokenManager.Insert(user);
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        User user = new User { PasswordHash = null, LastActivity = DateTime.Now, IsTemporary = true };
+                        user.Login = "user";
+                        TokenManager.Insert(user);
 
-                context.Users.Add(user);
-                context.SaveChanges();
+                        context.Users.Add(user);
+                        context.SaveChanges();
 
-                user.Login += user.Id;
-                context.SaveChanges();
-
-                return user;
+                        user.Login += user.Id;
+                        context.SaveChanges();
+                        transaction.Commit();
+                        return user;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return null;
+                    }
+                }
             }
         }
 
@@ -48,12 +59,12 @@ namespace DataManagers
             }
         }
 
-        public static bool GetStatus(int id)
+        public static bool? GetStatus(int id)
         {
             using (var context = new eQueueContext())
             {
                 User user = context.Users.Find(id);
-                return user.IsTemporary;
+                return user?.IsTemporary;
             }
         }
 
@@ -73,22 +84,21 @@ namespace DataManagers
             using (var context = new eQueueContext())
             {
                 User user = context.Users.Find(id);
-                return user.Login;
+                return user?.Login;
             }
         }
 
-        public static string UpdateLogin(int id, string newLogin)
+        public static void UpdateLogin(int id, string newLogin)
         {
             using (var context = new eQueueContext())
             {
                 User user = context.Users.Find(id);
                 user.Login = newLogin;
                 context.SaveChanges();
-                return user.Login;
             }
         }
 
-        public static bool UpdatePassword(int id, string newPasswordHash)
+        public static void UpdatePassword(int id, string newPasswordHash)
         {
             using (var context = new eQueueContext())
             {
@@ -96,7 +106,6 @@ namespace DataManagers
                 user.PasswordHash = newPasswordHash;
                 context.SaveChanges();
             }
-            return true;
         }
 
         public static void UpdateActivity(int id)

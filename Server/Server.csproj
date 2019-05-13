@@ -141,6 +141,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\PagesController.cs" />
+    <Compile Include="Controllers\REST\Auth.cs" />
     <Compile Include="Controllers\REST\OrderController.cs" />
     <Compile Include="Controllers\REST\QueueController.cs" />
     <Compile Include="Controllers\REST\UserController.cs" />

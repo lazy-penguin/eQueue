@@ -51,18 +51,6 @@ namespace DataManagers
                         context.SaveChanges();
                         transaction.Commit();
                     }
-                    catch (DbEntityValidationException ex)
-                    {
-                        foreach (DbEntityValidationResult validationError in ex.EntityValidationErrors)
-                        {
-                            System.Console.Write("Object: " + validationError.Entry.Entity.ToString());
-                            System.Console.Write(" ");
-                            foreach (DbValidationError err in validationError.ValidationErrors)
-                            {
-                                System.Console.Write(err.ErrorMessage + " ");
-                        }
-                        }
-                    }
                     catch (Exception e)
                     {
                         transaction.Rollback();
@@ -73,7 +61,7 @@ namespace DataManagers
             return true;
         }
 
-        public static bool Insert(int userId, int queueId)
+        public static void Insert(int userId, int queueId)
         {
             using (var context = new eQueueContext())
             {
@@ -91,7 +79,6 @@ namespace DataManagers
                 context.QueueOrders.Add(order);
                 context.SaveChanges();
             }
-            return true;
         }
 
         public static bool UpdateNumber(int userId, int queueId, int newNumber)
@@ -107,24 +94,38 @@ namespace DataManagers
             return true;
         }
 
-        public static void GetNext(int queueId)
+        public static bool GetNext(int queueId)
         {
             using (var context = new eQueueContext())
             {
-                var order = context.QueueOrders
-                                   .Where(a => a.QueueInfoId == queueId && a.Number == 1)
-                                   .FirstOrDefault();
-                if (order == null)
-                    return;
-                context.QueueOrders.Remove(order);
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var order = context.QueueOrders
+                                    .Where(a => a.QueueInfoId == queueId && a.Number == 1)
+                                    .FirstOrDefault();
+                        if (order == null)
+                            return false;
 
-                context.QueueOrders.Where(qo => qo.QueueInfoId == queueId)
-                                   .AsEnumerable()
-                                   .Select(qo => {
-                                       qo.Number--;
-                                       return qo;
-                                   });
-                context.SaveChanges();
+                        context.QueueOrders.Remove(order);
+                        context.QueueOrders.Where(qo => qo.QueueInfoId == queueId)
+                                           .AsEnumerable()
+                                           .Select(qo =>
+                                           {
+                                               qo.Number--;
+                                               return qo;
+                                           });
+                        context.SaveChanges();
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
             }
         }
 

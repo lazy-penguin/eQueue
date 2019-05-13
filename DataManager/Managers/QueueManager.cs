@@ -32,38 +32,36 @@ namespace DataManagers
                 var queue = context.Queues.Find(id);
                 if (queue == null)
                     return null;
-                return queue.Name;
+                return queue?.Name;
             }
         }
 
-        public static string UpdateName(int id, string newName)
+        public static void UpdateName(int id, string newName)
         {
             using (var context = new eQueueContext())
             {
                 var queue = context.Queues.Find(id);
                 queue.Name = newName;
                 context.SaveChanges();
-                return queue.Name;
             }
         }
 
-        public static DateTime GetTimer(int id)
+        public static DateTime? GetTimer(int id)
         {
             using (var context = new eQueueContext())
             {
                 var queue = context.Queues.Find(id);
-                return queue.Timer;
+                return queue?.Timer;
             }
         }
 
-        public static DateTime UpdateTimer(int id, DateTime newTimer)
+        public static void UpdateTimer(int id, DateTime newTimer)
         {
             using (var context = new eQueueContext())
             {
                 var queue = context.Queues.Find(id);
                 queue.Timer = newTimer;
                 context.SaveChanges();
-                return queue.Timer;
             }
         }
 

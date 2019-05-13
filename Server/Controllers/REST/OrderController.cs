@@ -11,30 +11,11 @@ namespace Server.Controllers
 {
     public class OrderController : ApiController
     {
-        private int CheckToken()
-        {
-            string token = null;
-            if (Request.Headers.Contains("Authorization"))
-            {
-                token = Request.Headers.GetValues("Authorization").First();
-            }
-
-            if (token == null)
-                return 0;
-
-            var userId = TokenManager.GetUserId(token);
-            return userId;
-        }
-        private bool CheckAccess(int userId, int queueId)
-        {
-            return UserAccessManager.CheckAccess(userId, queueId);
-        }
-
         [HttpGet]
         public IHttpActionResult Users(int id)
         {
-            int uid = CheckToken();
-            if (uid == 0 || !CheckAccess(uid, id))
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0 || !Auth.CheckAccess(uid, id))
                 return StatusCode(HttpStatusCode.Forbidden);
 
             var users = QueueOrderManager.GetUsers(id);
@@ -42,47 +23,47 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult Swap(int userA, int userB, int id)
+        public IHttpActionResult Swap(int userB, int id)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != userA || !CheckAccess(userA, id) || !CheckAccess(userB, id))
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0 || !Auth.CheckAccess(uid, id) || !Auth.CheckAccess(userB, id))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            bool ret = QueueOrderManager.SwapUsers(userA, userB, id);
+            bool ret = QueueOrderManager.SwapUsers(uid, userB, id);
             return Ok(ret);
         }
 
         [HttpGet]
-        public IHttpActionResult GetIn(int queueId, int userId)
+        public IHttpActionResult GetIn(int queueId)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != userId || !CheckAccess(uid, queueId))
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0 || !Auth.CheckAccess(uid, queueId))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            bool ret = QueueOrderManager.Insert(userId, queueId);
-            return Ok(ret);
+            QueueOrderManager.Insert(uid, queueId);
+            return Ok();
         }
 
         [HttpGet]
         public IHttpActionResult Next(int id)
         {
-            int uid = CheckToken();
-            if (uid == 0 || !CheckAccess(uid, id))
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0 || !Auth.CheckAccess(uid, id))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            QueueOrderManager.GetNext(id);
-            return Ok();
+            bool ret = QueueOrderManager.GetNext(id);
+            return Ok(ret);
         }
 
         /*delete position in the queue*/
         [HttpDelete]
-        public IHttpActionResult Exit(int queueId, int userId)
+        public IHttpActionResult Exit(int queueId)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != userId || !CheckAccess(uid, queueId))
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0 || !Auth.CheckAccess(uid, queueId))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            bool ret = QueueOrderManager.Delete(userId, queueId);
+            bool ret = QueueOrderManager.Delete(uid, queueId);
             return Ok(ret);
         }
     }

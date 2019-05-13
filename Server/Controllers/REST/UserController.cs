@@ -10,84 +10,69 @@ namespace Server.Controllers
 {
     public class UserController : ApiController
     {
-        private int CheckToken()
-        {
-            string token = null;
-            if (Request.Headers.Contains("Authorization"))
-            {
-                token = Request.Headers.GetValues("Authorization").First();
-            }
-
-            if (token == null)
-                return 0;
-
-            var userId = TokenManager.GetUserId(token);
-            return userId;
-        }
-
         [HttpGet]
-        public IHttpActionResult Login(int id)
+        public IHttpActionResult Login()
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != id)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            var login = UserManager.GetLogin(id);
+            var login = UserManager.GetLogin(uid);
             return new ObjectResult(login, login.GetType(), Request);
         }
 
         [HttpPost]
-        public IHttpActionResult Login(int id, string login)
+        public IHttpActionResult Login(string login)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != id)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            UserManager.UpdateLogin(id, login);
+            UserManager.UpdateLogin(uid, login);
             return Ok();
         }
 
         [HttpGet]
-        public IHttpActionResult Nickname(int userId, int queueId)
+        public IHttpActionResult Nickname(int queueId)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != userId)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            var nickname = UserAccessManager.GetNickname(userId, queueId);
+            var nickname = UserAccessManager.GetNickname(uid, queueId);
             return new ObjectResult(nickname, nickname.GetType(), Request);
         }
 
         [HttpPost]
-        public IHttpActionResult Nickname(int userId, int queueId, string nickname)
+        public IHttpActionResult Nickname(int queueId, [FromBody]string nickname)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != userId)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            UserAccessManager.UpdateNickname(userId, queueId, nickname);
+            UserAccessManager.UpdateNickname(uid, queueId, nickname);
+            return Ok();
+        }
+
+        [HttpPost]
+        public IHttpActionResult Status()
+        {
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            UserManager.UpdateStatus(uid);
             return Ok();
         }
 
         [HttpGet]
-        public IHttpActionResult Status(int id)
+        public IHttpActionResult Access(int queueId)
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != id)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            UserManager.UpdateStatus(id);
-            return Ok();
-        }
-
-        [HttpGet]
-        public IHttpActionResult Access(int userId, int queueId)
-        {
-            int uid = CheckToken();
-            if (uid == 0 || uid != userId)
-                return StatusCode(HttpStatusCode.Forbidden);
-
-            var access = UserAccessManager.GetAccessType(userId, queueId);
+            var access = UserAccessManager.GetAccessType(uid, queueId);
             return new ObjectResult(access, access.GetType(), Request);
         }
 
@@ -95,7 +80,7 @@ namespace Server.Controllers
         [HttpGet]
         public IHttpActionResult SignIn()
         {
-            int uid = CheckToken();
+            int uid = Auth.CheckToken(Request.Headers);
             if(uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
@@ -109,6 +94,9 @@ namespace Server.Controllers
         public IHttpActionResult SignUp()
         {
             var user = UserManager.Insert();
+            if (user == null)
+                return null;
+
             var data = new UserData(user.Login, user.Id, user.Tokens.Last().Token, user.IsTemporary);
             return new ObjectResult(data, data.GetType(), Request);
         }
@@ -117,7 +105,7 @@ namespace Server.Controllers
         [HttpPost]
         public IHttpActionResult SignUp([FromBody]UserData userData)
         {
-            int uid = CheckToken();
+            int uid = Auth.CheckToken(Request.Headers);
             if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
@@ -129,24 +117,24 @@ namespace Server.Controllers
         }
 
         [HttpDelete]
-        public IHttpActionResult Delete(int id)
+        public IHttpActionResult Delete()
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != id)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            bool ret = UserManager.Delete(id);
+            bool ret = UserManager.Delete(uid);
             return Ok(ret);
         }
 
         [HttpGet]
-        public IHttpActionResult Queues(int id)
+        public IHttpActionResult Queues()
         {
-            int uid = CheckToken();
-            if (uid == 0 || uid != id)
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            var queues = UserAccessManager.GetQueues(id);
+            var queues = UserAccessManager.GetQueues(uid);
             return new ObjectResult(queues, queues.GetType(), Request);
         }
     }
