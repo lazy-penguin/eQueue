@@ -9,6 +9,14 @@ namespace Server.Data
         public string UserNickname;
         public string Link;
         public DateTime Timer;
+
+        public QueueData(int userId, string name, string userNickname, string link, DateTime timer)
+        {
+            UserId = userId;
+            Name = name;
+            UserNickname = userNickname;
+            Link = link;
+            Timer = timer;
+        }
     }
- 
 }

@@ -10,7 +10,21 @@ namespace Server.Controllers
 {
     public class QueueController : ApiController
     {
-       
+       [HttpGet]
+       public IHttpActionResult Queue(int id)
+        {
+            int uid = Auth.CheckToken(Request.Headers);
+            if (uid == 0 || !Auth.CheckAccess(uid, id))
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var queue = QueueManager.GetQueue(id);
+            var owner = UserAccessManager.GetOwner(id);
+            if (queue == null || owner == null)
+                return null;
+            var data = new QueueData(owner.UserId, queue.Name, owner.Nickname, queue.Link, queue.Timer);
+            return new ObjectResult(data, data.GetType(), Request);
+        }
+
         [HttpGet]
         public IHttpActionResult Name(int id)
         {

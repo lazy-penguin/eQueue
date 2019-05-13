@@ -145,6 +145,7 @@
     <Compile Include="Controllers\REST\OrderController.cs" />
     <Compile Include="Controllers\REST\QueueController.cs" />
     <Compile Include="Controllers\REST\UserController.cs" />
+    <Compile Include="Data\Hasher.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
