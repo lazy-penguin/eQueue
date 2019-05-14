@@ -5,23 +5,21 @@
 	<script src="~/Scripts/lib/jquerry.min.js"></script>
 	<link rel="stylesheet" href="~/Scripts/lib/materialize.min.css">
 	<script src="~/Scripts/lib/materialize.min.js"></script>
+    <script defer src="~/Scripts/request.js"></script>
 	<script defer src="~/Scripts/auth.js"></script>
 	<script defer src="~/Scripts/main.js"></script>
 	<title>Main</title>
 </head>
 
 <body class="container">
-	<div class="row valign-wrapper">
-		<h2 class="col s12 m8 l8" style="color:dimgray;">
-			Select queue
-		</h2>
-		<div class="col s12 m4 l4 right-align">
-			<div>You logged as:
-				<span id="username"></span>
-			</div>
-			<button class="waves-effect grey lighten-1 btn-small black-text" onclick="changeUser()">Change user</button>
-		</div>
-	</div>
+    <div class="row valign-wrapper">
+        <h2 class="col s12 m8 l8" style="color:dimgray;">Select queue</h2>
+        <div class="col s12 m4 l4 right-align">
+            <div>You <span id="temporary-login-text"></span> logged as <span id="username"></span></div>
+            <a id="signup" class="waves-effect grey lighten-1 btn-small black-text" href="SignUp">Sign Up</a>
+            <a class="waves-effect grey lighten-1 btn-small black-text" href="SignIn">Sign In</a>
+        </div>
+    </div>
 
 	<div class="collection" id="queues" style="max-height: 60vh; overflow: auto;">
 	</div>

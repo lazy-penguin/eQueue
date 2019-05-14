@@ -1,23 +1,6 @@
 M.AutoInit();
 
-restApiUrl = document.location.origin + "/REST";
-queues = document.getElementById("queues");
-
-function loadQueues() {
-    var req = new XMLHttpRequest();
-    req.open("GET", serverIp + "/queue", false);
-    req.setRequestHeader('Authorization', `Token ${token}`);
-    try {
-        req.send();
-        if (xhr.status == 200) {
-            resp = JSON.parse(req.responseText);
-            resp.queues.forEach(queue => {
-                createQueueElement(queue.name);
-            });
-        }
-    }
-    catch { }
-}
+queuesDiv = document.getElementById("queues");
 
 function createQueueElement(queueName) {
     newQueueElement = document.createElement('a');
@@ -27,7 +10,7 @@ function createQueueElement(queueName) {
     newQueueElement.classList.add('lighten-4');
     newQueueElement.classList.add('black-text');
     newQueueElement.text = queueName
-    queues.appendChild(newQueueElement);
+    queuesDiv.appendChild(newQueueElement);
 }
 
 function createQueue() {
@@ -47,19 +30,19 @@ function createQueue() {
     if (queueName.trim() === "")
         return;
 
-    var req = new XMLHttpRequest();
-    req.open("POST", serverIp + "/queue/", false);
-    req.setRequestHeader('Authorization', `Token ${token}`);
-    try {
-        req.send(({ name: queueName, expires: queueExpiresDateTime }));
-        if (xhr.status == 200) {
-            createQueueElement(queueName);
-            $('#queueName')[0].value = null;
-            $('#datepicker')[0].value = null;
-            $('#timepicker')[0].value = null;
-        }
-    }
-    catch { }
+    executeRestApiRequest("POST", "queue/create", token,
+        {
+            UserId: user.Id,
+            Name: queueName,
+            UserNickname: user.Name,
+            Link: "",
+            Timer: queueExpiresDateTime
+
+        });
+    createQueueElement(queueName);
+    $('#queueName')[0].value = null;
+    $('#datepicker')[0].value = null;
+    $('#timepicker')[0].value = null;
 }
 
 function changeUser() {
@@ -70,4 +53,7 @@ $("#datepicker").datepicker({ container: $("body"), autoClose: true });
 $("#timepicker").timepicker({ container: "body", autoClose: true, twelveHour: false });
 $('.modal').modal();
 $('#username')[0].innerText = user.Name;
-loadQueues();
+queues = executeRestApiRequest("GET", "user/queues", token);
+queues.forEach(queue => {
+    createQueueElement(queue.Name);
+});

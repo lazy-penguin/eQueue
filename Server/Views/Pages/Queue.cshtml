@@ -5,52 +5,51 @@
     <script src="~/Scripts/lib/jquerry.min.js"></script>
     <link rel="stylesheet" href="~/Scripts/lib/materialize.min.css">
     <script src="~/Scripts/lib/materialize.min.js"></script>
+    <script defer src="~/Scripts/request.js"></script>
     <script defer src="~/Scripts/auth.js"></script>
     <script defer src="~/Scripts/queue.js"></script>
     <title>Main</title>
 </head>
 
 <body class="container">
-	<div class="row valign-wrapper">
-		<h2 class="col s12 m8 l8" style="color:dimgray;">Select queue</h2>
-		<div class="col s12 m4 l4 right-align">
-			<div>You <span id="temporary-login-text"></span> logged as <span id="username"></span></div>
-			<button class="waves-effect grey lighten-1 btn-small black-text" onclick="changeUser()">Register</button>
-			<button class="waves-effect grey lighten-1 btn-small black-text" onclick="changeUser()">Change user</button>
-		</div>
-	</div>
+    <div class="row valign-wrapper">
+        <div class="col s12 m8 l8">
+            <h1 id="queue-name" class="row" style="color:dimgray;">Queue Name</h1>
+            <h6 id="queue-expires" class="row" style="color:dimgray;">Queue Expires</h6>
+        </div>
+        <div class="col s12 m4 l4 right-align">
+            <div>You <span id="temporary-login-text"></span> logged as <span id="username"></span></div>
+            <a id="signup" class="waves-effect grey lighten-1 btn-small black-text" href="SignUp">Sign Up</a>
+            <a class="waves-effect grey lighten-1 btn-small black-text" href="SignIn">Sign In</a>
+        </div>
+    </div>
 
-	<div class="collection" id="queues" style="max-height: 60vh; overflow: auto;"></div>
+    <button id="take-place" class="col waves-effect waves-light grey btn">Take place</button>
 
-	<button class="waves-effect grey lighten-1 btn-large black-text modal-trigger"
-		data-target="joinQueueModal">Join</button>
-	<button class="waves-effect grey lighten-1 btn-large black-text modal-trigger"
-		data-target="createQueueModal">Create</button>
+    <div class="collection" id="queue-users" style="max-height: 60vh; overflow: auto;">
+        <div id="user-queue-entry" class="collection-item indigo darken-2 white-text row halign-wrapper">
+            <h6 id="user-queue-entry-name" class="col left">user#2</h6>
+            <div class="col right">
+                <button onClick="resetUserName()" class="col waves-effect waves-light grey btn modal-trigger"
+                        data-target="change-name-modal">
+                    <i class="material-icons">edit</i>
+                </button>
+                <button id="exchange-place" class="col waves-effect waves-light grey btn">
+                    <i class="material-icons">arrow_downward</i>
+                </button>
+                <button class="col waves-effect waves-light grey btn">
+                    <i class="material-icons">chevron_right</i>
+                </button>
+            </div>
+        </div>
+    </div>
 
-	<div id="createQueueModal" class="modal">
-		<div class="modal-content">
-			<fieldset>
-				<legend><b>Set queue properties</b></legend>
-				Name:<input type="text" placeholder="Queue name" id="queueName">
-				Expires:
-				<div class="row">
-					<input type="text" class="datepicker col s4" id="datepicker" placeholder="Date">
-					<input type="text" class="timepicker col s4 offset-s2" id="timepicker" placeholder="Time">
-				</div>
-				<button class="waves-effect grey lighten-1 btn-small black-text modal-close"
-					onclick="createQueue()">Create</button>
-			</fieldset>
-			</form>
-		</div>
-	</div>
-
-	<div id="joinQueueModal" class="modal">
-		<div class="modal-content">
-			<input type="text" placeholder="Queue link" id="queueInviteLink">
-			<button class="waves-effect grey lighten-1 btn-small black-text">Join</button>
-			</form>
-		</div>
-	</div>
+    <div id="change-name-modal" class="modal">
+        <div class="modal-content">
+            <input type="text" placeholder="username" id="modal-username">
+            <button class="waves-effect grey lighten-1 btn-small">Change</button>
+        </div>
+    </div>
 </body>
 
 </html>

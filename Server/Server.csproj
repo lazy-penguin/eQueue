@@ -157,7 +157,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\lib\materialize-font.woff2" />
-    <None Include="Views\Pages\Login.cshtml" />
+    <None Include="Views\Pages\SignIn.cshtml" />
     <None Include="Views\Pages\Main.cshtml" />
     <None Include="Views\Pages\Queue.cshtml" />
     <Content Include="Scripts\auth.js" />
@@ -165,8 +165,11 @@
     <Content Include="Scripts\lib\materialize-icons.css" />
     <Content Include="Scripts\lib\materialize.min.css" />
     <Content Include="Scripts\lib\materialize.min.js" />
+    <Content Include="Scripts\signup.js" />
+    <Content Include="Scripts\signin.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\queue.js" />
+    <Content Include="Scripts\request.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -175,6 +178,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
+    <Content Include="Views\Pages\SignUp.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

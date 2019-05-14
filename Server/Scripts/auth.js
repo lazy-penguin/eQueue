@@ -1,4 +1,3 @@
-restApiUrl = document.location.origin + "/REST";
 user = undefined;
 
 function getCookie(name) {
@@ -8,38 +7,17 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function getTemporaryUser() {
-    var req = new XMLHttpRequest();
-    req.open("GET", restApiUrl + "/user/signup/", false);
-    try {
-        req.send();
-        if (req.status == 200)
-            return JSON.parse(req.responseText);
-    }
-    catch { }
-    return null;
-}
-
-function getUserByToken(token) {
-    var req = new XMLHttpRequest();
-    req.open("GET", restApiUrl + "/user/signin?token=" + token, false);
-    try {
-        req.send();
-        if (req.status == 200)
-            return JSON.parse(req.responseText);
-    }
-    catch { }
-    return null;
-}
-
 token = getCookie("token");
-if (token !== undefined) {
-    user = getUserByToken(token);
+if (this.token !== undefined) {
+    user = executeRestApiRequest("GET", "user/signin", token);
 }
-console.log(user)
-if (token === undefined || user === null) {
-    user = getTemporaryUser();
+if (this.token === undefined || user === null) {
+    user = executeRestApiRequest("GET", "user/signup")
     document.cookie = `token=${user.Token}`;
     if (user === null)
         document.location = "/Login";
 }
+
+document.getElementById("temporary-login-text").innerText = user.IsTemporary ? "temporary " : "";
+document.getElementById("username").innerText = user.Name;
+document.getElementById("signup").hidden = !user.IsTemporary;

@@ -17,7 +17,12 @@ namespace REST.Controllers
         {
             return View();
         }
-        public ActionResult Login()
+        public ActionResult SignIn()
+        {
+            return View();
+        }
+
+        public ActionResult SignUp()
         {
             return View();
         }

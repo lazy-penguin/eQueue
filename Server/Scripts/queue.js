@@ -1,6 +1,5 @@
 M.AutoInit();
 
-serverIp = "http://127.0.0.1:1337";
 queueInfo = null;
 queueUsers = null;
 
@@ -14,21 +13,12 @@ exchangePlaceButton = document.getElementById("exchange-place");
 changeNameButton = document.getElementById("change-name");
 userNameEdit = document.getElementById("modal-username");
 
-$(document).ready(function () {
-    $('.modal').modal();
-    loadQueueInfo();
-    loadQueueUsers();
-});
-
 function resetUserName() {
     userNameEdit.value = user.name;
 }
 
 function loadQueueInfo() {
-    queueInfo = {
-        name: "Queue Example",
-        expires: new Date('2019-12-17T03:24:00')
-    };
+    queueInfo = executeRestApiRequest("GET", "user/queues", token);
     queueNameLabel.innerText = queueInfo.name;
     queueExpiresLabel.innerText = "expires in " +
         queueInfo.expires.toLocaleString("en-US", {
@@ -71,3 +61,7 @@ function createUserElement(userData) {
     userElement.innerText = userData.name
     queueUsersDiv.appendChild(userElement);
 }
+
+$('.modal').modal();
+loadQueueInfo();
+loadQueueUsers();
