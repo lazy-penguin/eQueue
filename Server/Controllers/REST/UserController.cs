@@ -103,16 +103,14 @@ namespace Server.Controllers
 
         /*regular registration*/
         [HttpPost]
-        public IHttpActionResult SignUp([FromBody]UserData userData)
+        public IHttpActionResult SignUp(string login, string password)
         {
             int uid = Auth.CheckToken(Request.Headers);
             if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            if (userData == null)
-                return BadRequest();
-
-            bool ret = UserManager.MakeRegular(userData.Id, userData.Name, null);  //where is password????
+            var passwordHash = Hasher.MD5Hash(password);
+            bool ret = UserManager.MakeRegular(uid, login, passwordHash);
             return Ok(ret);
         }
 

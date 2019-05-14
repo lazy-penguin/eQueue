@@ -72,7 +72,6 @@ namespace DataManagers
                 return access?.AccessTypeName.ToString();
             }
         }
-
         
         public static void UpdateAccessType(int userId, int queueId, AccessType type)
         {
@@ -83,6 +82,16 @@ namespace DataManagers
                                     .FirstOrDefault();
                 access.AccessTypeName = type;
                 context.SaveChanges();
+            }
+        }
+
+        public static UserAccess GetOwner(int queueId)
+        {
+            using (var context = new eQueueContext())
+            {
+                return context.UserAccesses
+                                    .Where(a => a.QueueInfoId == queueId && a.AccessTypeName == AccessType.Owner)
+                                    .FirstOrDefault();
             }
         }
 

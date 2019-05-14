@@ -25,6 +25,14 @@ namespace DataManagers
             }
         }
 
+        public static QueueInfo GetQueue(int id)
+        {
+            using (var context = new eQueueContext())
+            {
+                return context.Queues.Find(id);
+            }
+        }
+
         public static string GetName(int id)
         {
             using (var context = new eQueueContext())
