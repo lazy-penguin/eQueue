@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace DataManagers
 {
@@ -9,6 +10,14 @@ namespace DataManagers
             using (var context = new eQueueContext())
             {
                 return context.Users.Find(id);
+            }
+        }
+
+        public static User GetUserByLogin(string login, string passwordHash)
+        {
+            using (var context = new eQueueContext())
+            {
+                return context.Users.Where(u => u.Login == login && u.PasswordHash == passwordHash).FirstOrDefault();
             }
         }
 

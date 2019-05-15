@@ -89,6 +89,21 @@ namespace Server.Controllers
             return new ObjectResult(data, data.GetType(), Request);
         }
 
+        /*get user by token*/
+        [HttpPost]
+        public IHttpActionResult SignIn(string login, string password)
+        {
+            var passwordHash = Hasher.MD5Hash(password);
+            var user = UserManager.GetUserByLogin(login, passwordHash);
+            if(user == null)
+                return StatusCode(HttpStatusCode.Forbidden);
+
+            var token = TokenManager.GetToken(user.Id);
+
+            UserData data = new UserData(user.Login, user.Id, token, user.IsTemporary);
+            return new ObjectResult(data, data.GetType(), Request);
+        }
+
         /*temporary registration*/
         [HttpGet]
         public IHttpActionResult SignUp()

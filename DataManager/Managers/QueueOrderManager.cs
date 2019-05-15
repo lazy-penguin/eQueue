@@ -25,7 +25,7 @@ namespace DataManagers
 
         public static int GetLastNumberInQueue(QueueInfo queue, eQueueContext context)
         {
-            return context.QueueOrders.Select(qo => qo.Number).DefaultIfEmpty(0).Max(); ;
+            return context.QueueOrders.Where(qo => qo.Id == queue.Id).Select(qo => qo.Number).DefaultIfEmpty(0).Max();
         }
 
         public static bool SwapUsers(int userIdA, int userIdB, int queueId)
