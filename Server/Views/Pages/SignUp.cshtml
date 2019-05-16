@@ -2,20 +2,34 @@
 <html>
 
 <head>
-    <script src="~/Scripts/lib/jquerry.min.js"></script>
+    <script defer src="~/Scripts/lib/jquerry.min.js"></script>
     <link rel="stylesheet" href="~/Scripts/lib/materialize.min.css">
-    <script src="~/Scripts/lib/materialize.min.js"></script>
+    <script defer src="~/Scripts/lib/materialize.min.js"></script>
+    <script defer src="~/Scripts/app.js"></script>
+    <script defer src="~/Scripts/signup.js"></script>
     <title>Auth</title>
 </head>
 
 <body class="container">
-    <h1 style="color:dimgray;">Sign Up</h1>
-    <h6>Username:</h6>
-    <input type="text" placeholder="username" id="login"><br>
-    <h6>Password:</h6>
-    <input type="password" placeholder="Password"><br><br>
-    <input class="waves-effect grey lighten-1 btn-small" type="submit" value="Login">
+    <h2 style="color:dimgray;">Sign Up</h2>
 
+    <div class="input-field">
+        <input id="user-name" type="text">
+        <label for="user-name">Name</label>
+    </div>
+
+    <div class="input-field">
+        <input id="user-password" type="password">
+        <label for="user-password">Password</label>
+    </div>
+
+    <div class="input-field">
+        <input id="user-password-confirm" type="password">
+        <label for="user-password-confirm">Confirm password</label>
+        <span class="helper-text" data-error="Wrong" data-success="Ok">Repeat your password</span>
+    </div>
+
+    <button id="signup" class="waves-effect grey lighten-1 btn-large" type="submit" onclick="signUp()">Submit</button>
 </body>
 
 </html>

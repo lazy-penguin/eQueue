@@ -2,20 +2,28 @@
 <html>
 
 <head>
-    <script src="~/Scripts/lib/jquerry.min.js"></script>
+    <script defer src="~/Scripts/lib/jquerry.min.js"></script>
     <link rel="stylesheet" href="~/Scripts/lib/materialize.min.css">
-    <script src="~/Scripts/lib/materialize.min.js"></script>
+    <script defer src="~/Scripts/lib/materialize.min.js"></script>
+    <script defer src="~/Scripts/app.js"></script>
+    <script defer src="~/Scripts/signin.js"></script>
     <title>Auth</title>
 </head>
 
 <body class="container">
-        <h1 style="color:dimgray;">Sign In</h1>
-        <h6>Username:</h6>
-        <input type="text" placeholder="username" id="login"><br>
-        <h6>Password:</h6>
-        <input type="password" placeholder="Password"><br><br>
-        <input class="waves-effect grey lighten-1 btn-small" type="submit" value="Login">
+    <h2 style="color:dimgray;">Sign In</h2>
 
+    <div class="input-field">
+        <input id="user-name" type="text">
+        <label for="user-name">Name</label>
+    </div>
+
+    <div class="input-field">
+        <input id="user-password" type="password">
+        <label for="user-password">Password</label>
+    </div>
+
+    <button id="signin" class="waves-effect grey lighten-1 btn-large" type="submit" onclick="signIn()">Submit</button>
 </body>
 
 </html>

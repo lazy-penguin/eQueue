@@ -161,7 +161,7 @@
     <None Include="Views\Pages\SignIn.cshtml" />
     <None Include="Views\Pages\Main.cshtml" />
     <None Include="Views\Pages\Queue.cshtml" />
-    <Content Include="Scripts\auth.js" />
+    <Content Include="Scripts\app.js" />
     <Content Include="Scripts\lib\jquerry.min.js" />
     <Content Include="Scripts\lib\materialize-icons.css" />
     <Content Include="Scripts\lib\materialize.min.css" />
@@ -170,7 +170,6 @@
     <Content Include="Scripts\signin.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\queue.js" />
-    <Content Include="Scripts\request.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

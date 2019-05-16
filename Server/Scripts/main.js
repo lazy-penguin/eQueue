@@ -1,5 +1,4 @@
 M.AutoInit();
-
 queuesDiv = document.getElementById("queues");
 
 function createQueueElement(queueName) {
@@ -49,11 +48,12 @@ function changeUser() {
     document.location = "./Login.html"
 }
 
+initAuthData();
 $("#datepicker").datepicker({ container: $("body"), autoClose: true });
 $("#timepicker").timepicker({ container: "body", autoClose: true, twelveHour: false });
 $('.modal').modal();
 $('#username')[0].innerText = user.Name;
-queues = executeRestApiRequest("GET", "user/queues", token);
+queues = executeRestApiRequest("GET", "user/queues", getToken());
 queues.forEach(queue => {
     createQueueElement(queue.Name);
 });
