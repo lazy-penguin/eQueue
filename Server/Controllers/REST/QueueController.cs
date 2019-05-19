@@ -11,17 +11,21 @@ namespace Server.Controllers
     public class QueueController : ApiController
     {
        [HttpGet]
-       public IHttpActionResult Queue(int id)
+       public IHttpActionResult Queue(string link)
         {
+            var queue = QueueManager.GetQueue(link);
+            if (queue == null)
+                return NotFound();
+
             int uid = Auth.CheckToken(Request.Headers);
-            if (uid == 0 || !Auth.CheckAccess(uid, id))
+            if (uid == 0 || !Auth.CheckAccess(uid, queue.Id))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            var queue = QueueManager.GetQueue(id);
-            var owner = UserAccessManager.GetOwner(id);
-            if (queue == null || owner == null)
-                return null;
-            var data = new QueueData(owner.UserId, queue.Name, owner.Nickname, queue.Link, queue.Timer);
+            var owner = UserAccessManager.GetOwner(queue.Id);
+            if (owner == null)
+                return InternalServerError();
+
+            var data = new QueueData(queue.Id, owner.UserId, queue.Name, owner.Nickname, queue.Link, queue.Timer);
             return new ObjectResult(data, data.GetType(), Request);
         }
 
@@ -91,19 +95,24 @@ namespace Server.Controllers
                 return BadRequest();
 
             string link = Guid.NewGuid().ToString();
-            QueueManager.Insert(queueData.Name, link, queueData.Timer, queueData.UserNickname, queueData.UserId);
-            return Ok();
+            var queueInfo = QueueManager.Insert(
+                queueData.Name, link, queueData.Timer ?? DateTime.MaxValue, queueData.OwnerNickname, queueData.OwnerId);
+            return new ObjectResult(queueInfo, queueInfo.GetType(), Request);
         }
 
         [HttpGet]
-        public IHttpActionResult Join(int queueId, [FromBody]string nickname)
+        public IHttpActionResult Join(string link)
         {
             int uid = Auth.CheckToken(Request.Headers);
             if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            UserAccessManager.Insert(nickname, uid, queueId);
-            return Ok();
+            var queue = QueueManager.GetQueue(link);
+            if (queue == null)
+                return NotFound();
+
+            UserAccessManager.Insert(UserManager.GetUser(uid).Login, uid, queue.Id);
+            return Ok(true);
         }
 
         [HttpDelete]

@@ -3,8 +3,9 @@
 
 <head>
     <script src="~/Scripts/lib/jquerry.min.js"></script>
-    <link rel="stylesheet" href="~/Scripts/lib/materialize.min.css">
-    <script src="~/Scripts/lib/materialize.min.js"></script>
+    <link rel="stylesheet" href="~/Scripts/lib/materialize.min.css"/>
+    <link rel="stylesheet" href="~/Scripts/lib/materialize-icons.css"/>
+    <script defer src="~/Scripts/lib/materialize.min.js"></script>
     <script defer src="~/Scripts/app.js"></script>
     <script defer src="~/Scripts/queue.js"></script>
     <title>Main</title>
@@ -23,20 +24,20 @@
         </div>
     </div>
 
-    <button id="take-place" class="col waves-effect waves-light grey btn">Take place</button>
+    <button id="take-place" class="col waves-effect waves-light grey btn" onclick="takePlace()">Take place</button>
 
     <div class="collection" id="queue-users" style="max-height: 60vh; overflow: auto;">
-        <div id="user-queue-entry" class="collection-item indigo darken-2 white-text row halign-wrapper">
+        <div id="user-queue-entry" class="collection-item indigo darken-2 white-text row halign-wrapper" hidden="hidden">
             <h6 id="user-queue-entry-name" class="col left">user#2</h6>
             <div class="col right">
-                <button onClick="resetUserName()" class="col waves-effect waves-light grey btn modal-trigger"
+                @*<button onClick="resetUserName()" class="col waves-effect waves-light grey btn modal-trigger"
                         data-target="change-name-modal">
                     <i class="material-icons">edit</i>
-                </button>
-                <button id="exchange-place" class="col waves-effect waves-light grey btn">
+                </button>*@
+                <button id="exchange-place" class="col waves-effect waves-light grey btn" onclick="swap()">
                     <i class="material-icons">arrow_downward</i>
                 </button>
-                <button class="col waves-effect waves-light grey btn">
+                <button class="col waves-effect waves-light grey btn" onclick="leaveOrder()">
                     <i class="material-icons">chevron_right</i>
                 </button>
             </div>

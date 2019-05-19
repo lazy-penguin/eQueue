@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataManagers;
+using Server.Data;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Http;
-using DataManagers;
-using Server.Data;
 
 namespace Server.Controllers
 {
     public class OrderController : ApiController
     {
         [HttpGet]
-        public IHttpActionResult Users(int id)
+        public IHttpActionResult Users(int queueId)
         {
             int uid = Auth.CheckToken(Request.Headers);
-            if (uid == 0 || !Auth.CheckAccess(uid, id))
+            if (uid == 0 || !Auth.CheckAccess(uid, queueId))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            var users = QueueOrderManager.GetUsers(id);
+            var users = QueueOrderManager.GetUsers(queueId);
             return new ObjectResult(users, users.GetType(), Request);
         }
 
@@ -41,7 +38,7 @@ namespace Server.Controllers
                 return StatusCode(HttpStatusCode.Forbidden);
 
             QueueOrderManager.Insert(uid, queueId);
-            return Ok();
+            return Ok(true);
         }
 
         [HttpGet]

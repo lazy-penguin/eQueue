@@ -4,17 +4,19 @@ namespace Server.Data
 {
     public class QueueData
     {
-        public int UserId;
+        public int Id;
+        public int OwnerId;
         public string Name;
-        public string UserNickname;
+        public string OwnerNickname;
         public string Link;
-        public DateTime Timer;
+        public DateTime? Timer;
 
-        public QueueData(int userId, string name, string userNickname, string link, DateTime timer)
+        public QueueData(int id, int ownerId, string name, string ownerNickname, string link, DateTime? timer)
         {
-            UserId = userId;
+            Id = id;
+            OwnerId = ownerId;
             Name = name;
-            UserNickname = userNickname;
+            OwnerNickname = ownerNickname;
             Link = link;
             Timer = timer;
         }

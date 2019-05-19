@@ -18,10 +18,11 @@ function resetUserName() {
 }
 
 function loadQueueInfo() {
-    queueInfo = executeRestApiRequest("GET", "user/queues", token);
-    queueNameLabel.innerText = queueInfo.name;
+    queueLink = document.location.href.split("/")[4]
+    queueInfo = executeRestApiRequest("GET", `queue/queue?link=${queueLink}`, getToken());
+    queueNameLabel.innerText = queueInfo.Name;
     queueExpiresLabel.innerText = "expires in " +
-        queueInfo.expires.toLocaleString("en-US", {
+        queueInfo.Timer.toLocaleString("en-US", {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -33,24 +34,22 @@ function loadQueueInfo() {
 }
 
 function loadQueueUsers() {
-    userQueueEntry.hidden = true;
+    document.querySelectorAll('.queue-order-user-element').forEach(el => queueUsersDiv.removeChild(el));
+    if (queueUsersDiv.contains(userQueueEntry))
+        queueUsersDiv.removeChild(userQueueEntry);
     takePlaceButton.classList.remove("disabled");
     exchangePlaceButton.classList.remove("disabled");
-    users = [
-        { id: 3, name: "Maria" },
-        { id: 1, name: "Alex" },
-        { id: 2, name: "John" }];
-    users.forEach(userData => createUserElement(userData));
-    if (users[users.length - 1].id == user.id)
+    queueUsers = executeRestApiRequest("GET", `order/users?queueId=${queueInfo.Id}`, getToken());
+    queueUsers.forEach(userData => createUserElement(userData));
+    if (queueUsers.length > 0 && queueUsers[queueUsers.length - 1].Id === user.Id)
         exchangePlaceButton.classList.add("disabled");
 }
 
 function createUserElement(userData) {
-    if (userData.id == user.id) {
+    if (userData.Id === user.Id) {
         userQueueEntry.hidden = false;
         takePlaceButton.classList.add("disabled");
-        userQueueEntryName.innerText = user.name;
-        queueUsersDiv.removeChild(userQueueEntry);
+        userQueueEntryName.innerText = user.Name;
         queueUsersDiv.appendChild(userQueueEntry);
         return;
     }
@@ -58,10 +57,29 @@ function createUserElement(userData) {
     userElement.classList.add('collection-item');
     userElement.classList.add('deep-purple');
     userElement.classList.add('lighten-4');
-    userElement.innerText = userData.name
+    userElement.classList.add('queue-order-user-element')
+    userElement.innerText = userData.Login
     queueUsersDiv.appendChild(userElement);
 }
 
+function takePlace() {
+    executeRestApiRequest("GET", `order/getin?queueId=${queueInfo.Id}`, getToken());
+    loadQueueUsers();
+}
+
+function leaveOrder() {
+    executeRestApiRequest("DELETE", `order/exit?queueId=${queueInfo.Id}`, getToken());
+    loadQueueUsers();
+}
+
+function swap() {
+    userPos = -1;
+    while (queueUsers[++userPos].Id !== user.Id);
+    executeRestApiRequest("GET", `order/swap?userB=${queueUsers[userPos + 1].Id}&id=${queueInfo.Id}`, getToken());
+    loadQueueUsers();
+}
+
 $('.modal').modal();
+user = initAuthData();
 loadQueueInfo();
 loadQueueUsers();

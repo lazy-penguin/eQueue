@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
 using System.Linq;
 
 namespace DataManagers
@@ -19,13 +18,17 @@ namespace DataManagers
         {
             using (var context = new eQueueContext())
             {
-                return context.QueueOrders.Where(qo => qo.QueueInfoId == queueId).Select(qo => qo.User).ToList();
+                return context.QueueOrders
+                    .Where(qo => qo.QueueInfoId == queueId)
+                    .OrderBy(qo => qo.Number)
+                    .Select(qo => qo.User)
+                    .ToList();
             }
         }
 
         public static int GetLastNumberInQueue(QueueInfo queue, eQueueContext context)
         {
-            return context.QueueOrders.Where(qo => qo.Id == queue.Id).Select(qo => qo.Number).DefaultIfEmpty(0).Max();
+            return context.QueueOrders.Where(qo => qo.QueueInfoId == queue.Id).Select(qo => qo.Number).DefaultIfEmpty(0).Max();
         }
 
         public static bool SwapUsers(int userIdA, int userIdB, int queueId)
@@ -141,12 +144,9 @@ namespace DataManagers
 
                 context.QueueOrders.Remove(order);
 
-                context.QueueOrders.Where(qo => qo.QueueInfoId == queueId)
-                                    .AsEnumerable()
-                                    .Select(qo => {
-                                        qo.Number--;
-                                        return qo;
-                                    });
+                foreach (var qo in context.QueueOrders.Where(qo => qo.QueueInfoId == queueId && qo.Number > order.Number))
+                    qo.Number--;
+
                 context.SaveChanges();
             }
             return true;

@@ -15,6 +15,8 @@ function initAuthData() {
         document.getElementById("signup").classList.remove("hide");
     else
         document.getElementById("signin").innerText = "change user"
+
+    return user;
 }
 
 function getCookie(name) {
@@ -37,11 +39,8 @@ function executeRestApiRequest(method, url, token, body) {
     req.open(method, document.location.origin + "/REST/" + url, false);
     req.setRequestHeader("Authorization", token)
     req.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
-    try {
-        req.send(JSON.stringify(body));
-        if (req.status == 200)
-            return JSON.parse(req.responseText);
-    }
-    catch { }
+    req.send(JSON.stringify(body));
+    if (req.status == 200)
+        return JSON.parse(req.responseText);
     return null;
 }

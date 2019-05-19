@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace DataManagers
 {
@@ -30,6 +31,14 @@ namespace DataManagers
             using (var context = new eQueueContext())
             {
                 return context.Queues.Find(id);
+            }
+        }
+
+        public static QueueInfo GetQueue(string link)
+        {
+            using (var context = new eQueueContext())
+            {
+                return context.Queues.FirstOrDefault(q => q.Link == link);
             }
         }
 
