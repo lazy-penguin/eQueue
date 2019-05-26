@@ -15,7 +15,7 @@
     <div class="row valign-wrapper">
         <div class="col s12 m8 l8">
             <h1 id="queue-name" class="row" style="color:dimgray;">Queue Name</h1>
-            <h6 id="queue-expires" class="row" style="color:dimgray;">Queue Expires</h6>
+            <h6 id="queue-expires" class="row hide" style="color:dimgray;">Queue Expires</h6>
         </div>
         <div class="col s12 m4 l4 right-align">
             <div>You <span id="temporary-login-text"></span> logged as <span id="username"></span></div>
@@ -24,6 +24,9 @@
         </div>
     </div>
 
+    <a class="col waves-effect waves-light grey btn" href="..">
+        <i class="material-icons">chevron_left</i>
+    </a>
     <button id="take-place" class="col waves-effect waves-light grey btn" onclick="takePlace()">Take place</button>
 
     <div class="collection" id="queue-users" style="max-height: 60vh; overflow: auto;">
@@ -31,9 +34,9 @@
             <h6 id="user-queue-entry-name" class="col left">user#2</h6>
             <div class="col right">
                 @*<button onClick="resetUserName()" class="col waves-effect waves-light grey btn modal-trigger"
-                        data-target="change-name-modal">
-                    <i class="material-icons">edit</i>
-                </button>*@
+                            data-target="change-name-modal">
+                        <i class="material-icons">edit</i>
+                    </button>*@
                 <button id="exchange-place" class="col waves-effect waves-light grey btn" onclick="swap()">
                     <i class="material-icons">arrow_downward</i>
                 </button>

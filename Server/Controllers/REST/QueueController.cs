@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DataManagers;
+using Server.Data;
+using System;
 using System.Net;
 using System.Web.Http;
-using DataManagers;
-using Server.Data;
 
 namespace Server.Controllers
 {
     public class QueueController : ApiController
     {
-       [HttpGet]
-       public IHttpActionResult Queue(string link)
+        [HttpGet]
+        public IHttpActionResult Queue(string link)
         {
             var queue = QueueManager.GetQueue(link);
             if (queue == null)
@@ -90,14 +88,15 @@ namespace Server.Controllers
             int uid = Auth.CheckToken(Request.Headers);
             if (uid == 0)
                 return StatusCode(HttpStatusCode.Forbidden);
+            var user = UserManager.GetUser(uid);
 
             if (queueData == null)
                 return BadRequest();
 
             string link = Guid.NewGuid().ToString();
-            var queueInfo = QueueManager.Insert(
-                queueData.Name, link, queueData.Timer ?? DateTime.MaxValue, queueData.OwnerNickname, queueData.OwnerId);
-            return new ObjectResult(queueInfo, queueInfo.GetType(), Request);
+            var queueInfo = QueueManager.Insert(queueData.Name, link, queueData.Timer, user.Id);
+
+            return new ObjectResult(new QueueData(queueInfo.Id, user.Id, queueInfo.Name, user.Login, queueInfo.Link, queueInfo.Timer), typeof(QueueData), Request);
         }
 
         [HttpGet]
@@ -125,7 +124,7 @@ namespace Server.Controllers
             bool ret = QueueManager.Delete(id);
             return Ok(ret);
         }
-       
+
         [HttpPost]
         public IHttpActionResult Owner(int queueId, int userId)
         {

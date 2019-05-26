@@ -6,22 +6,24 @@ namespace DataManagers
     public static class QueueManager
     {
         /*create new QueueInfo and UserAcces with info about queue's owner*/
-        public static QueueInfo Insert(string name, string link, DateTime timer, string nickname,int userId)
+        public static QueueInfo Insert(string queueName, string link, DateTime? timer, int ownerId)
         {
             using (var context = new eQueueContext())
             {
-                var queue = new QueueInfo { Name = name, Link =  link, Timer = timer};
-                var access = new UserAccess { Nickname = nickname, AccessTypeName = AccessType.Owner };
-                var user = context.Users.Find(userId);
+                var queue = new QueueInfo { Name = queueName, Link = link, Timer = timer };
+                var owner = context.Users.Find(ownerId);
+                var access = new UserAccess
+                {
+                    Nickname = owner.Login,
+                    AccessTypeName = AccessType.Owner,
+                    User = owner,
+                    QueueInfo = queue
+                };
 
-                access.User = user;
-                access.QueueInfo = queue;
-
-                user.UserAccesses.Add(access);
-                queue.UserAccesses.Add(access);
                 context.Queues.Add(queue);
                 context.UserAccesses.Add(access);
                 context.SaveChanges();
+
                 return queue;
             }
         }

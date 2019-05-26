@@ -13,8 +13,7 @@ namespace DataManagers
         public string Name { get; set; }
         [Required]
         public string Link { get; set; }
-        public DateTime Timer { get; set; }
-
+        public DateTime? Timer { get; set; }
         public ICollection<QueueOrder> QueueOrders { get; set; }
         public ICollection<UserAccess> UserAccesses { get; set; }
         public QueueInfo()

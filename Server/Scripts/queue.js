@@ -21,6 +21,9 @@ function loadQueueInfo() {
     queueLink = document.location.href.split("/")[4]
     queueInfo = executeRestApiRequest("GET", `queue/queue?link=${queueLink}`, getToken());
     queueNameLabel.innerText = queueInfo.Name;
+    if (queueInfo.Timer === null)
+        return;
+    queueExpiresLabel.classList.remove("hide");
     queueExpiresLabel.innerText = "expires in " +
         queueInfo.Timer.toLocaleString("en-US", {
             year: 'numeric',
